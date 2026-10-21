@@ -74,35 +74,54 @@ export const api = {
   token,
   sessions: () => jget<SessionInfo[]>('/api/sessions'),
   newSession: (name: string) => jpost<SessionInfo>('/api/sessions', { name }),
-  jobs: (session: string) => jget<JobInfo[]>('/api/jobs?session=' + encodeURIComponent(session)),
+  jobs: (session: string) =>
+    jget<JobInfo[]>('/api/jobs?session=' + encodeURIComponent(session)),
   job: (id: string) => jget<JobInfo>('/api/jobs/' + encodeURIComponent(id)),
-  graph: (id: string) => jget<Graph>('/api/jobs/' + encodeURIComponent(id) + '/graph'),
+  graph: (id: string) =>
+    jget<Graph>('/api/jobs/' + encodeURIComponent(id) + '/graph'),
   run: (session: string, script: string, detachMs = 0) =>
-    jpost<{ jobId: string }>('/api/sessions/' + encodeURIComponent(session) + '/run', { script, detachMs }),
+    jpost<{ jobId: string }>(
+      '/api/sessions/' + encodeURIComponent(session) + '/run',
+      { script, detachMs },
+    ),
   history: (session: string) =>
-    jget<{ history: string[] }>('/api/sessions/' + encodeURIComponent(session) + '/history'),
+    jget<{ history: string[] }>(
+      '/api/sessions/' + encodeURIComponent(session) + '/history',
+    ),
   addHistory: (session: string, command: string) =>
-    jpost('/api/sessions/' + encodeURIComponent(session) + '/history', { command }),
+    jpost('/api/sessions/' + encodeURIComponent(session) + '/history', {
+      command,
+    }),
   kill: (id: string) => jpost('/api/jobs/' + encodeURIComponent(id) + '/kill'),
   stdin: (id: string, data: string, close = false) =>
     jpost('/api/jobs/' + encodeURIComponent(id) + '/stdin', { data, close }),
 
   async output(id: string): Promise<string> {
-    const r = await fetch('/api/jobs/' + encodeURIComponent(id) + '/output', { headers: headers() })
+    const r = await fetch('/api/jobs/' + encodeURIComponent(id) + '/output', {
+      headers: headers(),
+    })
     return r.ok ? r.text() : ''
   },
   async flowContent(id: string, fid: number): Promise<string> {
-    const r = await fetch(`/api/jobs/${encodeURIComponent(id)}/flows/${fid}`, { headers: headers() })
+    const r = await fetch(`/api/jobs/${encodeURIComponent(id)}/flows/${fid}`, {
+      headers: headers(),
+    })
     return r.ok ? r.text() : ''
   },
 
   // watchFlow streams one flow's bytes live (SSE): the intermediate result of a
   // pipe/redirect as it is produced. Non-blocking on the server side.
-  watchFlow(id: string, fid: number, onOutput: (d: string) => void, onDone?: () => void) {
+  watchFlow(
+    id: string,
+    fid: number,
+    onOutput: (d: string) => void,
+    onDone?: () => void,
+  ) {
     const url =
-      `/api/jobs/${encodeURIComponent(id)}/flows/${fid}/watch` + (token() ? '?token=' + token() : '')
+      `/api/jobs/${encodeURIComponent(id)}/flows/${fid}/watch` +
+      (token() ? '?token=' + token() : '')
     const es = new EventSource(url)
-    es.addEventListener('output', (e) => onOutput((e as MessageEvent).data))
+    es.addEventListener('output', e => onOutput((e as MessageEvent).data))
     es.addEventListener('done', () => {
       onDone?.()
       es.close()
@@ -112,11 +131,19 @@ export const api = {
   },
 
   // watch streams a job's output via SSE (all flows, tagged by kind).
-  watch(id: string, onOutput: (data: string) => void, onDone?: (data: string) => void) {
-    const url = '/api/jobs/' + encodeURIComponent(id) + '/watch' + (token() ? '?token=' + token() : '')
+  watch(
+    id: string,
+    onOutput: (data: string) => void,
+    onDone?: (data: string) => void,
+  ) {
+    const url =
+      '/api/jobs/' +
+      encodeURIComponent(id) +
+      '/watch' +
+      (token() ? '?token=' + token() : '')
     const es = new EventSource(url)
-    es.addEventListener('output', (e) => onOutput((e as MessageEvent).data))
-    es.addEventListener('done', (e) => {
+    es.addEventListener('output', e => onOutput((e as MessageEvent).data))
+    es.addEventListener('done', e => {
       onDone?.((e as MessageEvent).data)
       es.close()
     })
@@ -127,7 +154,9 @@ export const api = {
   ws(session: string): WebSocket {
     const proto = location.protocol === 'https:' ? 'wss' : 'ws'
     const q = token() ? '?token=' + token() : ''
-    return new WebSocket(`${proto}://${location.host}/api/sessions/${encodeURIComponent(session)}/ws${q}`)
+    return new WebSocket(
+      `${proto}://${location.host}/api/sessions/${encodeURIComponent(session)}/ws${q}`,
+    )
   },
 }
 
