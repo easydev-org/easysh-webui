@@ -2,7 +2,8 @@
 // and kept in sessionStorage, matching the worker panel.
 
 const params = new URLSearchParams(location.search)
-if (params.get('token')) sessionStorage.setItem('easysh_token', params.get('token')!)
+if (params.get('token'))
+  sessionStorage.setItem('easysh_token', params.get('token')!)
 const token = () => sessionStorage.getItem('easysh_token') || ''
 
 function headers(): Record<string, string> {
@@ -18,7 +19,11 @@ async function jget<T>(path: string): Promise<T> {
 }
 
 async function jpost<T = unknown>(path: string, body?: unknown): Promise<T> {
-  const r = await fetch(path, { method: 'POST', headers: headers(), body: JSON.stringify(body ?? {}) })
+  const r = await fetch(path, {
+    method: 'POST',
+    headers: headers(),
+    body: JSON.stringify(body ?? {}),
+  })
   if (!r.ok) throw new Error(await r.text())
   return (await r.json().catch(() => ({}))) as T
 }
