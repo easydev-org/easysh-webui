@@ -7,8 +7,16 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "biome check .",
-    "check:svelte": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "biome lint .",
+    "check:fix": "biome lint --write .",
+    "check:svelte": "svelte-check --tsconfig ./tsconfig.json",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "format:svelte": "prettier --check \"src/**/*.svelte\"",
+    "format:svelte:fix": "prettier --write \"src/**/*.svelte\"",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write ."
   },
   "dependencies": {
     "@lucide/svelte": "^0.544.0",
@@ -25,6 +33,8 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.9",
     "@sveltejs/vite-plugin-svelte": "^7.3.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-svelte": "^4.1.1",
     "svelte-check": "^4.3.0",
     "typescript": "^5.9.3",
     "vite": "^8.2.2"

@@ -34,12 +34,6 @@
   let { class: klass, variant, size, disabled, title, onclick, children }: Props = $props()
 </script>
 
-<button
-  type="button"
-  class={cn(button({ variant, size }), klass)}
-  {disabled}
-  {title}
-  {onclick}
->
+<button type="button" class={cn(button({ variant, size }), klass)} {disabled} {title} {onclick}>
   {@render children?.()}
 </button>

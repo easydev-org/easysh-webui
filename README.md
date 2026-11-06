@@ -1,9 +1,10 @@
 # easysh-webui
 
 The WebUI for **[easysh](../easysh)** — a non-POSIX, flow-first shell. A Svelte 5
-+ Vite + Tailwind 4 single-page app: an xterm.js terminal, a Jobs drawer, and a
-dataflow **flow graph** (each pipe/redirect/fd as a node, each intermediate
-result readable and watchable live), plus session history and a light/dark theme.
+
+- Vite + Tailwind 4 single-page app: an xterm.js terminal, a Jobs drawer, and a
+  dataflow **flow graph** (each pipe/redirect/fd as a node, each intermediate
+  result readable and watchable live), plus session history and a light/dark theme.
 
 It talks to the easysh daemon over HTTP/JSON + SSE + WebSocket, served
 same-origin by the daemon.

@@ -70,7 +70,7 @@
       status = 'disconnected'
       write('\r\n[disconnected]\r\n')
     }
-    ws.onmessage = (ev) => {
+    ws.onmessage = ev => {
       const m = JSON.parse(ev.data)
       switch (m.event) {
         case 'started':
@@ -147,7 +147,9 @@
 </script>
 
 <div class="flex min-h-0 flex-1 flex-col">
-  <div class="flex h-8 shrink-0 items-center gap-2 border-b border-border px-3 text-micro text-muted-foreground">
+  <div
+    class="flex h-8 shrink-0 items-center gap-2 border-b border-border px-3 text-micro text-muted-foreground"
+  >
     <AppIcons.terminal class="size-3.5" />
     <span class="font-mono">{sessionName}</span>
     <span class="rounded bg-muted px-1.5 py-0.5">{status}</span>

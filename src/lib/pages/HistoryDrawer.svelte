@@ -26,7 +26,7 @@
   const shown = $derived(
     lines
       .map((l, i) => ({ l, i }))
-      .filter((x) => !filter || x.l.toLowerCase().includes(filter.toLowerCase()))
+      .filter(x => !filter || x.l.toLowerCase().includes(filter.toLowerCase()))
       .reverse(),
   )
 
@@ -79,7 +79,9 @@
       <span class="term-line min-w-0 flex-1">{l}</span>
       <button
         class="shrink-0 rounded border border-border px-1.5 py-0.5 text-micro transition-colors
-          {copied === i ? 'border-success text-success' : 'text-muted-foreground hover:text-foreground'}"
+          {copied === i
+          ? 'border-success text-success'
+          : 'text-muted-foreground hover:text-foreground'}"
         title="copy to clipboard"
         onclick={() => copyCmd(l, i)}
       >

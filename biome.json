@@ -10,8 +10,7 @@
     "includes": ["src/**/*.ts", "*.ts", "*.json"]
   },
   "formatter": {
-    "enabled": true,
-    "indentStyle": "space"
+    "enabled": false
   },
   "linter": {
     "enabled": true,
@@ -25,22 +24,8 @@
       }
     }
   },
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "single",
-      "semicolons": "asNeeded",
-      "trailingCommas": "all",
-      "bracketSpacing": true,
-      "arrowParentheses": "asNeeded",
-      "quoteProperties": "asNeeded"
-    }
-  },
+  "javascript": {},
   "assist": {
-    "enabled": true,
-    "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
-    }
+    "enabled": false
   }
 }

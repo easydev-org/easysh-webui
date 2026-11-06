@@ -49,7 +49,7 @@
     es = api.watchFlow(
       jobId,
       picked.fid,
-      (d) => {
+      d => {
         content += d
       },
       () => {
@@ -84,7 +84,7 @@
   // ── layered layout ────────────────────────────────────────────────────────
   // Layer = longest path from a source. Computed over the edge set.
   const layout = $derived.by(() => {
-    const byId = new Map(graph.flows.map((f) => [f.fid, f]))
+    const byId = new Map(graph.flows.map(f => [f.fid, f]))
     const ins = new Map<number, number[]>()
     for (const f of graph.flows) ins.set(f.fid, [])
     for (const [a, b] of graph.edges) ins.get(b)?.push(a)
@@ -93,7 +93,7 @@
     // Kahn's algorithm on the DAG.
     const indeg = new Map<number, number>()
     for (const f of graph.flows) indeg.set(f.fid, ins.get(f.fid)!.length)
-    const q = graph.flows.filter((f) => indeg.get(f.fid) === 0).map((f) => f.fid)
+    const q = graph.flows.filter(f => indeg.get(f.fid) === 0).map(f => f.fid)
     for (const id of q) layer.set(id, 0)
     const outs = new Map<number, number[]>()
     for (const f of graph.flows) outs.set(f.fid, [])
@@ -156,7 +156,14 @@
   }
 
   // Distinct source segments (a stage's span), in source order.
-  interface Seg { line: number; col: number; endLine: number; endCol: number; label: string; fids: number[] }
+  interface Seg {
+    line: number
+    col: number
+    endLine: number
+    endCol: number
+    label: string
+    fids: number[]
+  }
   const segs = $derived.by(() => {
     const m = new Map<string, Seg>()
     for (const f of graph.flows) {
@@ -174,10 +181,12 @@
   })
 
   function segActive(s: Seg): boolean {
-    return (picked != null && s.fids.includes(picked.fid)) || (hover != null && s.fids.includes(hover))
+    return (
+      (picked != null && s.fids.includes(picked.fid)) || (hover != null && s.fids.includes(hover))
+    )
   }
   function pickSeg(s: Seg) {
-    const f = graph.flows.find((x) => x.fid === s.fids[0])
+    const f = graph.flows.find(x => x.fid === s.fids[0])
     if (f) open(f)
   }
 </script>
@@ -185,7 +194,9 @@
 <div class="flex min-h-0 flex-1 flex-col">
   {#if segs.length > 0}
     <div class="shrink-0 border-b border-border p-2">
-      <div class="mb-1 text-micro text-muted-foreground">source segments (click to highlight a flow)</div>
+      <div class="mb-1 text-micro text-muted-foreground">
+        source segments (click to highlight a flow)
+      </div>
       <div class="flex flex-wrap gap-1">
         {#each segs as s, i (i)}
           <button
@@ -218,7 +229,15 @@
           height={layout.height}
         >
           <defs>
-            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <marker
+              id="arrow"
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
               <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
             </marker>
           </defs>
@@ -249,13 +268,19 @@
             title="click to view this flow's content"
           >
             <div class="truncate font-mono text-micro text-muted-foreground">
-              f{f.fid} · {f.kind}{#if f.fd} · {f.fd}{/if}
+              f{f.fid} · {f.kind}{#if f.fd}
+                · {f.fd}{/if}
             </div>
-            <div class="truncate font-mono text-meta {isData(f) ? 'text-foreground' : 'text-muted-foreground'}">
+            <div
+              class="truncate font-mono text-meta {isData(f)
+                ? 'text-foreground'
+                : 'text-muted-foreground'}"
+            >
               {label(f)}
             </div>
             <div class="truncate text-micro text-muted-foreground">
-              {f.bytes} B · {f.lines} lines{#if f.iter} · {f.iter}{/if}
+              {f.bytes} B · {f.lines} lines{#if f.iter}
+                · {f.iter}{/if}
             </div>
           </button>
         {/each}
@@ -280,7 +305,10 @@
         <span class="font-mono">f{picked.fid} · {picked.kind} · {content.length} B</span>
         {#if live}<span class="text-primary">live</span>{/if}
         <span class="ml-auto"></span>
-        <button class="rounded border border-border px-1.5 py-0.5 hover:text-foreground" onclick={watchLive}>
+        <button
+          class="rounded border border-border px-1.5 py-0.5 hover:text-foreground"
+          onclick={watchLive}
+        >
           watch live
         </button>
         <button

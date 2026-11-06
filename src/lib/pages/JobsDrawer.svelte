@@ -42,7 +42,7 @@
     watching = false
     output = stripAnsi(await api.output(id))
     if (view === 'output') {
-      const j = jobs.find((x) => x.id === id)
+      const j = jobs.find(x => x.id === id)
       if (j && (j.state === 'running' || j.state === 'detached')) watch(id)
     }
   }
@@ -53,7 +53,7 @@
     watching = true
     es = api.watch(
       id,
-      (d) => {
+      d => {
         output += stripAnsi(d)
       },
       () => {
@@ -160,10 +160,12 @@
       {#if view === 'output'}
         <pre class="term-line min-h-0 flex-1 overflow-auto p-3">{output}</pre>
       {:else}
-        <FlowGraph jobId={selected} command={jobs.find((x) => x.id === selected)?.command ?? ''} />
+        <FlowGraph jobId={selected} command={jobs.find(x => x.id === selected)?.command ?? ''} />
       {/if}
     {:else}
-      <p class="p-3 text-meta text-muted-foreground">Select a job to view its output or flow graph.</p>
+      <p class="p-3 text-meta text-muted-foreground">
+        Select a job to view its output or flow graph.
+      </p>
     {/if}
   </div>
 </div>

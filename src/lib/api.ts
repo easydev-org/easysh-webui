@@ -2,8 +2,7 @@
 // and kept in sessionStorage, matching the worker panel.
 
 const params = new URLSearchParams(location.search)
-if (params.get('token'))
-  sessionStorage.setItem('easysh_token', params.get('token')!)
+if (params.get('token')) sessionStorage.setItem('easysh_token', params.get('token')!)
 const token = () => sessionStorage.getItem('easysh_token') || ''
 
 function headers(): Record<string, string> {
@@ -74,20 +73,16 @@ export const api = {
   token,
   sessions: () => jget<SessionInfo[]>('/api/sessions'),
   newSession: (name: string) => jpost<SessionInfo>('/api/sessions', { name }),
-  jobs: (session: string) =>
-    jget<JobInfo[]>('/api/jobs?session=' + encodeURIComponent(session)),
+  jobs: (session: string) => jget<JobInfo[]>('/api/jobs?session=' + encodeURIComponent(session)),
   job: (id: string) => jget<JobInfo>('/api/jobs/' + encodeURIComponent(id)),
-  graph: (id: string) =>
-    jget<Graph>('/api/jobs/' + encodeURIComponent(id) + '/graph'),
+  graph: (id: string) => jget<Graph>('/api/jobs/' + encodeURIComponent(id) + '/graph'),
   run: (session: string, script: string, detachMs = 0) =>
-    jpost<{ jobId: string }>(
-      '/api/sessions/' + encodeURIComponent(session) + '/run',
-      { script, detachMs },
-    ),
+    jpost<{ jobId: string }>('/api/sessions/' + encodeURIComponent(session) + '/run', {
+      script,
+      detachMs,
+    }),
   history: (session: string) =>
-    jget<{ history: string[] }>(
-      '/api/sessions/' + encodeURIComponent(session) + '/history',
-    ),
+    jget<{ history: string[] }>('/api/sessions/' + encodeURIComponent(session) + '/history'),
   addHistory: (session: string, command: string) =>
     jpost('/api/sessions/' + encodeURIComponent(session) + '/history', {
       command,
@@ -111,12 +106,7 @@ export const api = {
 
   // watchFlow streams one flow's bytes live (SSE): the intermediate result of a
   // pipe/redirect as it is produced. Non-blocking on the server side.
-  watchFlow(
-    id: string,
-    fid: number,
-    onOutput: (d: string) => void,
-    onDone?: () => void,
-  ) {
+  watchFlow(id: string, fid: number, onOutput: (d: string) => void, onDone?: () => void) {
     const url =
       `/api/jobs/${encodeURIComponent(id)}/flows/${fid}/watch` +
       (token() ? '?token=' + token() : '')
@@ -131,16 +121,9 @@ export const api = {
   },
 
   // watch streams a job's output via SSE (all flows, tagged by kind).
-  watch(
-    id: string,
-    onOutput: (data: string) => void,
-    onDone?: (data: string) => void,
-  ) {
+  watch(id: string, onOutput: (data: string) => void, onDone?: (data: string) => void) {
     const url =
-      '/api/jobs/' +
-      encodeURIComponent(id) +
-      '/watch' +
-      (token() ? '?token=' + token() : '')
+      '/api/jobs/' + encodeURIComponent(id) + '/watch' + (token() ? '?token=' + token() : '')
     const es = new EventSource(url)
     es.addEventListener('output', e => onOutput((e as MessageEvent).data))
     es.addEventListener('done', e => {

@@ -25,7 +25,7 @@
   async function refreshSessions() {
     try {
       sessions = await api.sessions()
-      const s = sessions.find((x) => x.name === sessionName) ?? sessions[0]
+      const s = sessions.find(x => x.name === sessionName) ?? sessions[0]
       if (s) {
         sessionName = s.name
         dir = s.dir
@@ -38,7 +38,7 @@
 
   function pickSession(e: Event) {
     sessionName = (e.target as HTMLSelectElement).value
-    const s = sessions.find((x) => x.name === sessionName)
+    const s = sessions.find(x => x.name === sessionName)
     if (s) dir = s.dir
     drawer = null
   }
@@ -113,7 +113,9 @@
       <AppIcons.jobs class="size-4" />Jobs
     </Button>
     <Button variant="ghost" size="icon" onclick={toggleTheme} title="toggle theme">
-      {#if theme === 'dark'}<AppIcons.sun class="size-4" />{:else}<AppIcons.moon class="size-4" />{/if}
+      {#if theme === 'dark'}<AppIcons.sun class="size-4" />{:else}<AppIcons.moon
+          class="size-4"
+        />{/if}
     </Button>
   </header>
 
