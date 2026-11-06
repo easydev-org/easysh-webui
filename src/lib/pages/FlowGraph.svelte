@@ -167,12 +167,22 @@
   const segs = $derived.by(() => {
     const m = new Map<string, Seg>()
     for (const f of graph.flows) {
-      if (!f.line) continue
-      const k = `${f.line}:${f.col}-${f.endLine}:${f.endCol}`
+      /**
+       * A FLOW WITHOUT A COMPLETE SPAN IS SKIPPED, not partially drawn.
+       *
+       * The four coordinates are separate optional fields, and each can be absent on its own — a flow reported
+       * without a column, or without an end. Checking only `line` (the old guard) left the other three as
+       * `number | undefined`, and they went straight into a segment that declares them as `number`; the mismatch was
+       * invisible until a type check ran, and at runtime would have drawn a segment at `undefined`.
+       */
+      const { line, col, endLine, endCol } = f
+      if (line === undefined || col === undefined || endLine === undefined || endCol === undefined)
+        continue
+      const k = `${line}:${col}-${endLine}:${endCol}`
       const lbl = f.owner && f.owner !== 'job' ? f.owner : f.producer || f.kind
       let s = m.get(k)
       if (!s) {
-        s = { line: f.line, col: f.col, endLine: f.endLine, endCol: f.endCol, label: lbl, fids: [] }
+        s = { line, col, endLine, endCol, label: lbl, fids: [] }
         m.set(k, s)
       }
       s.fids.push(f.fid)
